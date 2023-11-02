@@ -30,6 +30,6 @@ class Exercise05Test extends TestCase
                               
         $response = $this->put(route('articles.stock', $a));
 
-        $response->assertRedirectContains('Stock increased !');
+        $response->followRedirects($response)->assertSee('Stock increased !');
     }
 }

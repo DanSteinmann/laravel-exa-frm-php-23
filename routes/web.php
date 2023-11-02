@@ -19,3 +19,4 @@ use App\Http\Controllers\ArticleController;
 Route::resource('articles', ArticleController::class);
 
 Route::get('/', [ArticleController::class, 'index']);
+Route::post('/articles/{article}/increment-stock', [ArticleController::class, 'incrementStock'])->name('articles.increment-stock');

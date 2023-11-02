@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Http\Requests\StoreArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
+use Exception;
+use Illuminate\Http\RedirectResponse;
 
 use Illuminate\Http\Request;
 
@@ -47,23 +50,34 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
-        //
+        return view('articles.edit', ['article' => $article]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
-        //
+        $article->update($request->except('_token', '_method'));
+        return redirect()->route('articles.index')->with('message', 'article updated !');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $article)
+    public function destroy(Article $article): RedirectResponse
     {
-        $article->delete();
-        return redirect()->route('articles.index')->with('success', 'Article deleted successfully');
+        try {
+            $article->delete();
+            return redirect()->route('articles.index')->with('success', 'Article deleted successfully.');
+        } catch (Exception $e) {
+            return back()->withErrors(['message' => $e->getMessage()]);
+        }
+    }
+
+    public function incrementStock(Article $article): RedirectResponse
+    {
+        $article->incrementStock();
+        return back()->with('success', 'Stock increased !');
     }
 }
